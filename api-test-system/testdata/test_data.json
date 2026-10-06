@@ -1,0 +1,85 @@
+{
+  "_meta": {
+    "project": "学之思在线考试系统 (xzs-mysql)",
+    "base_url": "http://localhost:8000",
+    "auth": "Spring Security 会话(JSESSIONID)，登录接口 POST /api/user/login",
+    "response_format": "{code, message, response}，code=1 成功",
+    "note": "password 均为明文，前端明文提交；库中存储为 RSA 公钥加密密文"
+  },
+  "accounts": {
+    "admin":   {"userName": "admin",   "password": "123456", "role": 3, "desc": "管理员"},
+    "student": {"userName": "student", "password": "123456", "role": 1, "userLevel": 1, "desc": "学生(一年级)"},
+    "student2":{"userName": "ki",      "password": "123",    "role": 1, "userLevel": 1, "desc": "第二学生(越权测试用)"}
+  },
+  "login_cases": [
+    {"case": "AUTH-001", "body": {"userName": "admin", "password": "123456", "remember": false}, "expectCode": 1},
+    {"case": "AUTH-002", "body": {"userName": "student", "password": "123456", "remember": false}, "expectCode": 1},
+    {"case": "AUTH-003", "body": {"userName": "admin", "password": "wrong", "remember": false}, "expectCode": 402},
+    {"case": "AUTH-004", "body": {"userName": "ghost_user_x", "password": "123456", "remember": false}, "expectCode": 402},
+    {"case": "AUTH-005", "body": {"userName": "", "password": "", "remember": false}, "expectFail": true},
+    {"case": "AUTH-009", "body": {"userName": "a_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "password": "123456"}, "expectNoServerError": true}
+  ],
+  "subject": {
+    "create": {"name": "自动化测试科目", "level": 900, "levelName": "自动化年级"},
+    "update": {"name": "自动化测试科目_改", "level": 901, "levelName": "自动化年级2"},
+    "invalid_missing_name": {"level": 1, "levelName": "x"}
+  },
+  "question": {
+    "valid_single": {
+      "questionType": 1, "subjectId": 5, "title": "自动化单选题",
+      "analyze": "解析", "score": "10", "correct": "A",
+      "items": [
+        {"prefix": "A", "content": "正确选项", "score": "5", "itemUuid": "u-a"},
+        {"prefix": "B", "content": "错误选项", "score": "5", "itemUuid": "u-b"}
+      ]
+    },
+    "invalid_single_no_correct": {
+      "questionType": 1, "subjectId": 5, "title": "无答案单选题",
+      "analyze": "解析", "score": "10",
+      "items": [
+        {"prefix": "A", "content": "选项A", "score": "5", "itemUuid": "u1"},
+        {"prefix": "B", "content": "选项B", "score": "5", "itemUuid": "u2"}
+      ]
+    },
+    "invalid_gap_score_mismatch": {
+      "questionType": 4, "subjectId": 5, "title": "空分不匹配填空题",
+      "analyze": "解析", "score": "10",
+      "items": [
+        {"prefix": "1", "content": "答案1", "score": "3", "itemUuid": "g1"},
+        {"prefix": "2", "content": "答案2", "score": "3", "itemUuid": "g2"}
+      ]
+    }
+  },
+  "exam_paper": {
+    "valid_fixed": {
+      "level": 1, "subjectId": 5, "paperType": 1, "name": "自动化固定试卷",
+      "suggestTime": 30, "score": "10",
+      "titleItems": [{"name": "一、单选题", "questionItems": []}]
+    },
+    "invalid_blank_name": {
+      "level": 1, "subjectId": 1, "paperType": 1, "name": "",
+      "suggestTime": 10, "score": "0", "titleItems": []
+    }
+  },
+  "message": {
+    "valid": {"title": "自动化通知", "content": "这是一条自动化测试消息", "receiveUserIds": [1]},
+    "invalid_empty_receiver": {"title": "t", "content": "c", "receiveUserIds": []},
+    "invalid_blank_title": {"title": "", "content": "c", "receiveUserIds": [1]}
+  },
+  "user_register": {
+    "valid": {"userName": "auto_stu_demo", "password": "123456", "userLevel": 1},
+    "duplicate": {"userName": "student", "password": "123456", "userLevel": 1},
+    "invalid_blank": {"userName": "", "password": "", "userLevel": 1}
+  },
+  "security_payloads": {
+    "sql_injection_login": {"userName": "admin' OR '1'='1", "password": "' OR '1'='1", "remember": false},
+    "sql_injection_query": {"pageIndex": 1, "pageSize": 10, "userName": "a' OR 1=1 -- "},
+    "xss_message": {"title": "<script>alert(1)</script>", "content": "<img src=x onerror=alert(1)>", "receiveUserIds": [1]},
+    "boundary_page_size": {"pageIndex": 1, "pageSize": 100000},
+    "boundary_page_negative": {"pageIndex": -1, "pageSize": 10}
+  },
+  "expected_codes": {
+    "OK": 1, "TOKEN_ERROR": 400, "UNAUTHORIZED": 401,
+    "AUTH_ERROR": 402, "INNER_ERROR": 500, "PARAM_ERROR": 501, "ACCESS_DENIED": 502
+  }
+}

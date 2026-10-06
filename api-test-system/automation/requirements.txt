@@ -1,0 +1,6 @@
+# 学之思 API 自动化测试 - 依赖
+# 安装：D:\python38\python.exe -m pip install -r requirements.txt
+requests>=2.25
+pytest>=7.0
+pytest-html>=3.1          # 生成 HTML 报告（可选）
+pycryptodome>=3.15        # 解密库中密码密文（工具脚本用）

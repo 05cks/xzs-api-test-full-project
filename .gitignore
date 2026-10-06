@@ -1,0 +1,16 @@
+# Python缓存
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# 本地真实配置，不要提交git
+automation/config.py
+
+# 运行时自动产出报告日志
+reports/
+*.log
+
+# IDE文件
+.idea/
+.vscode/

@@ -1,0 +1,218 @@
+{
+  "info": {
+    "name": "学之思在线考试系统 API 测试",
+    "_postman_id": "xzs-api-test-0001",
+    "description": "学之思在线考试系统 后台接口测试集合。\n\n使用说明：\n1. 设置环境变量 baseUrl=http://localhost:8000；\n2. 先执行【认证】下的登录请求，Cookie(JSESSIONID) 会被 Postman 自动保存并复用；\n3. 管理端请求需先登录 admin，学生端需先登录 student。\n\n响应体统一为 {code, message, response}，code=1 为成功。",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8000" },
+    { "key": "paperId", "value": "1" },
+    { "key": "questionId", "value": "1" },
+    { "key": "subjectId", "value": "1" },
+    { "key": "answerId", "value": "1" }
+  ],
+  "item": [
+    {
+      "name": "01-认证",
+      "item": [
+        {
+          "name": "管理员登录",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('登录成功 code=1', function(){ pm.response.to.have.status(200); pm.expect(pm.response.json().code).to.eql(1); });"
+            ]}
+          }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/user/login", "host": ["{{baseUrl}}"], "path": ["api","user","login"] },
+            "body": { "mode": "raw", "raw": "{\n  \"userName\": \"admin\",\n  \"password\": \"123456\",\n  \"remember\": false\n}" }
+          }
+        },
+        {
+          "name": "学生登录",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/user/login", "host": ["{{baseUrl}}"], "path": ["api","user","login"] },
+            "body": { "mode": "raw", "raw": "{\n  \"userName\": \"student\",\n  \"password\": \"123456\",\n  \"remember\": false\n}" }
+          }
+        },
+        {
+          "name": "登出",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{baseUrl}}/api/user/logout", "host": ["{{baseUrl}}"], "path": ["api","user","logout"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "02-管理端",
+      "item": [
+        {
+          "name": "仪表盘",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/admin/dashboard/index", "host": ["{{baseUrl}}"], "path": ["api","admin","dashboard","index"] },
+            "body": { "mode": "raw", "raw": "{}" }
+          }
+        },
+        {
+          "name": "学科-列表",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/admin/education/subject/list", "host": ["{{baseUrl}}"], "path": ["api","admin","education","subject","list"] },
+            "body": { "mode": "raw", "raw": "{}" }
+          }
+        },
+        {
+          "name": "学科-分页",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/admin/education/subject/page", "host": ["{{baseUrl}}"], "path": ["api","admin","education","subject","page"] },
+            "body": { "mode": "raw", "raw": "{\n  \"pageIndex\": 1,\n  \"pageSize\": 10\n}" }
+          }
+        },
+        {
+          "name": "学科-新增",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/admin/education/subject/edit", "host": ["{{baseUrl}}"], "path": ["api","admin","education","subject","edit"] },
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Postman测试科目\",\n  \"level\": 1,\n  \"levelName\": \"一年级\"\n}" }
+          }
+        },
+        {
+          "name": "题目-分页",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/admin/question/page", "host": ["{{baseUrl}}"], "path": ["api","admin","question","page"] },
+            "body": { "mode": "raw", "raw": "{\n  \"pageIndex\": 1,\n  \"pageSize\": 10\n}" }
+          }
+        },
+        {
+          "name": "试卷-分页",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/admin/exam/paper/page", "host": ["{{baseUrl}}"], "path": ["api","admin","exam","paper","page"] },
+            "body": { "mode": "raw", "raw": "{\n  \"pageIndex\": 1,\n  \"pageSize\": 10,\n  \"paperType\": 1\n}" }
+          }
+        },
+        {
+          "name": "用户-分页",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/admin/user/page/list", "host": ["{{baseUrl}}"], "path": ["api","admin","user","page","list"] },
+            "body": { "mode": "raw", "raw": "{\n  \"pageIndex\": 1,\n  \"pageSize\": 10\n}" }
+          }
+        },
+        {
+          "name": "消息-发送",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/admin/message/send", "host": ["{{baseUrl}}"], "path": ["api","admin","message","send"] },
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Postman通知\",\n  \"content\": \"测试消息\",\n  \"receiveUserIds\": [1]\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "03-学生端",
+      "item": [
+        {
+          "name": "考试首页",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/student/dashboard/index", "host": ["{{baseUrl}}"], "path": ["api","student","dashboard","index"] },
+            "body": { "mode": "raw", "raw": "{}" }
+          }
+        },
+        {
+          "name": "试卷分页",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/student/exam/paper/pageList", "host": ["{{baseUrl}}"], "path": ["api","student","exam","paper","pageList"] },
+            "body": { "mode": "raw", "raw": "{\n  \"pageIndex\": 1,\n  \"pageSize\": 10,\n  \"paperType\": 1\n}" }
+          }
+        },
+        {
+          "name": "试卷详情(发现答案泄露)",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('检查是否泄露correct', function(){ var b=pm.response.json(); var qs=[]; (b.response.titleItems||[]).forEach(t=>(t.questionItems||[]).forEach(q=>qs.push(q))); var leak=qs.filter(q=>q.correct).map(q=>q.id); pm.expect(leak, '泄露答案的题目:'+leak).to.eql([]); });"
+            ]}
+          }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/student/exam/paper/select/{{paperId}}", "host": ["{{baseUrl}}"], "path": ["api","student","exam","paper","select","{{paperId}}"] },
+            "body": { "mode": "raw", "raw": "{}" }
+          }
+        },
+        {
+          "name": "我的答卷",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/student/exampaper/answer/pageList", "host": ["{{baseUrl}}"], "path": ["api","student","exampaper","answer","pageList"] },
+            "body": { "mode": "raw", "raw": "{\n  \"pageIndex\": 1,\n  \"pageSize\": 10\n}" }
+          }
+        },
+        {
+          "name": "当前用户",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/student/user/current", "host": ["{{baseUrl}}"], "path": ["api","student","user","current"] },
+            "body": { "mode": "raw", "raw": "{}" }
+          }
+        },
+        {
+          "name": "未读消息数",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/student/user/message/unreadCount", "host": ["{{baseUrl}}"], "path": ["api","student","user","message","unreadCount"] },
+            "body": { "mode": "raw", "raw": "{}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "04-安全测试",
+      "item": [
+        {
+          "name": "未登录访问(期望401)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/admin/dashboard/index", "host": ["{{baseUrl}}"], "path": ["api","admin","dashboard","index"] },
+            "body": { "mode": "raw", "raw": "{}" }
+          }
+        },
+        {
+          "name": "SQL注入登录(期望失败)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/user/login", "host": ["{{baseUrl}}"], "path": ["api","user","login"] },
+            "body": { "mode": "raw", "raw": "{\n  \"userName\": \"admin' OR '1'='1\",\n  \"password\": \"' OR '1'='1\",\n  \"remember\": false\n}" }
+          }
+        }
+      ]
+    }
+  ]
+}
